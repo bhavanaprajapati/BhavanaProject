@@ -1,0 +1,11 @@
+/* .errors {
+    .form-control {
+        border: var(--bs-border-width) solid red;
+    }
+  } */
+
+  .form-control.error {
+    border: var(--bs-border-width) solid red;
+  }
+
+  

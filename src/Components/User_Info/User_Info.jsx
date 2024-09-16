@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import UserInfoCss from '../User_Info/User_Info.css'
 
-const User_Info = ({ onSubmit }) => {
+const User_Info = ({ onSubmit, formData: initialData, prevStep }) => {
   const [formData, setFormData] = useState({
     firstName: '',
     middleName: '',
@@ -18,6 +19,13 @@ const User_Info = ({ onSubmit }) => {
 
   const [formErrors, setFormErrors] = useState({});
   const [submittedData, setSubmittedData] = useState(null);
+
+    // Populate the form with initial data (from previous step)
+    useEffect(() => {
+      if (initialData) {
+        setFormData(initialData);
+      }
+    }, [initialData]);
 
   // Validate form fields
   const validate = () => {
@@ -39,9 +47,18 @@ const User_Info = ({ onSubmit }) => {
     return Object.keys(errors).length === 0;
   };
 
+  // const handleChange = (e) => {
+  //   const { id, value } = e.target;
+  //   setFormData((prevData) => ({ ...prevData, [id]: value }));
+  // };
+
   const handleChange = (e) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [id]: value }));
+    const { id, value, type, name } = e.target;
+    if (type === 'radio') {
+      setFormData((prevData) => ({ ...prevData, [name]: value }));  // For radio buttons
+    } else {
+      setFormData((prevData) => ({ ...prevData, [id]: value }));
+    }
   };
 
   // Handle form submission
@@ -64,7 +81,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="text" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.firstName ? 'error' : ''}`}
                     id="firstName" 
                     placeholder="First name"
                     value={formData.firstName}
@@ -79,7 +97,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="text" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.middleName ? 'error' : ''}`}
                     id="middleName" 
                     placeholder="Middle name"
                     value={formData.middleName}
@@ -94,7 +113,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="text" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.lastName ? 'error' : ''}`}
                     id="lastName" 
                     placeholder="Last name"
                     value={formData.lastName}
@@ -109,7 +129,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="tel" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.mobileNo ? 'error' : ''}`}
                     id="mobileNo" 
                     placeholder="Mobile No"
                     value={formData.mobileNo}
@@ -124,7 +145,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="email" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.email ? 'error' : ''}`}
                     id="email" 
                     placeholder="Email"
                     value={formData.email}
@@ -139,8 +161,10 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="date" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.birthday ? 'error' : ''}`}
                     id="birthday"
+                    placeholder="Birthdate"
                     value={formData.birthday}
                     onChange={handleChange}
                   />
@@ -153,7 +177,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="number" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.age ? 'error' : ''}`}
                     id="age" 
                     placeholder="Age"
                     value={formData.age}
@@ -167,7 +192,8 @@ const User_Info = ({ onSubmit }) => {
               <div className="col-md-6 mb-4">
                 <div className="form-group">
                   <select 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.bloodGroup ? 'error' : ''}`}
                     id="bloodGroup"
                     value={formData.bloodGroup}
                     onChange={handleChange}
@@ -187,7 +213,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="text" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.height ? 'error' : ''}`}
                     id="height" 
                     placeholder="Height"
                     value={formData.height}
@@ -202,7 +229,8 @@ const User_Info = ({ onSubmit }) => {
                 <div className="form-group">
                   <input 
                     type="text" 
-                    className="form-control" 
+                    // className="form-control" 
+                    className={`form-control ${formErrors.weight ? 'error' : ''}`}
                     id="weight" 
                     placeholder="Weight"
                     value={formData.weight}
@@ -212,48 +240,107 @@ const User_Info = ({ onSubmit }) => {
                 </div>
               </div>
 
-              {/* Gender */}
-              <div className="col-md-6 mb-4">
-                <div className="form-group">
-                  <select 
-                    className="form-control" 
-                    id="gender"
-                    value={formData.gender}
+                {/* Gender Radio Buttons */}
+                <div className="col-md-6 mb-4">
+                <label>Gender</label>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="genderMale" 
+                    name="gender" 
+                    value="male"
+                    checked={formData.gender === 'male'}
                     onChange={handleChange}
-                  >
-                    <option value="">---Choose Gender---</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                  {formErrors.gender && <small className="form-text text-danger">{formErrors.gender}</small>}
+                  />
+                  <label className="form-check-label" htmlFor="genderMale">Male</label>
                 </div>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="genderFemale" 
+                    name="gender" 
+                    value="female"
+                    checked={formData.gender === 'female'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="genderFemale">Female</label>
+                </div>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="genderOther" 
+                    name="gender" 
+                    value="other"
+                    checked={formData.gender === 'other'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="genderOther">Other</label>
+                </div>
+                {formErrors.gender && <small className="form-text text-danger">{formErrors.gender}</small>}
               </div>
 
-              {/* Marital Status */}
+              {/* Marital Status Radio Buttons */}
               <div className="col-md-6 mb-4">
-                <div className="form-group">
-                  <select 
-                    className="form-control" 
-                    id="maritalStatus"
-                    value={formData.maritalStatus}
+                <label>Marital Status</label>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="single" 
+                    name="maritalStatus" 
+                    value="single"
+                    checked={formData.maritalStatus === 'single'}
                     onChange={handleChange}
-                  >
-                    <option value="">---Choose Marital Status---</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
-                  </select>
-                  {formErrors.maritalStatus && <small className="form-text text-danger">{formErrors.maritalStatus}</small>}
+                  />
+                  <label className="form-check-label" htmlFor="single">Single</label>
                 </div>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="married" 
+                    name="maritalStatus" 
+                    value="married"
+                    checked={formData.maritalStatus === 'married'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="married">Married</label>
+                </div>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="divorced" 
+                    name="maritalStatus" 
+                    value="divorced"
+                    checked={formData.maritalStatus === 'divorced'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="divorced">Divorced</label>
+                </div>
+                <div className="form-check">
+                  <input 
+                    type="radio" 
+                    className="form-check-input" 
+                    id="widowed" 
+                    name="maritalStatus" 
+                    value="widowed"
+                    checked={formData.maritalStatus === 'widowed'}
+                    onChange={handleChange}
+                  />
+                  <label className="form-check-label" htmlFor="widowed">Widowed</label>
+                </div>
+                {formErrors.maritalStatus && <small className="form-text text-danger">{formErrors.maritalStatus}</small>}
               </div>
 
-              <div className="col-md-1 mb-4">
-                <button type="submit" className="btn btn-secondary rounded-0">Prev</button>
+              <div className="col-md-2 col-3 col-lg-1 mb-4">
+                <button type="button" className="btn btn-secondary rounded-0" onClick={prevStep}>Prev</button>
               </div>
-              <div className="col-md-1 mb-4">
-                <button type="submit" className="btn btn-primary rounded-0">Next</button>
+              <div className="col-md-2 col-3 col-lg-1 mb-4">
+                <button type="submit" className="btn btn-primary rounded-0"  >Next</button>
               </div>
             </div>
           </form>
